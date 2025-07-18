@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Quiz Game</title>
+    <link rel="stylesheet" href="task_3.css">
+
+</head>
+<body>
+    <div id="quiz-container">
+    <h2 id="question"></h2>
+    <div id="options" class="options"></div>
+    <input type="text" id="fillBlank" class="hidden" placeholder="Your answer here..."/>
+    <button onclick="submitAnswer()">Submit</button>
+    <p id="scoreBoard" class="hidden"></p>
+    </div>
+
+    <script>
+    const questions = [
+
+        {
+        type: "single",
+        question: "What is Misty’s main goal as a Pokémon trainer throughout the series?",
+        options: ["To win the Indigo League", "To become a Water Pokemon Master", "To catch all Pokemon", "To defeat Team Rocket"],
+        answer: ["To become a Water Pokemon Master"]
+        },
+        {
+        type: "single",
+        question: "What Pokémon did Ash first catch after leaving Pallet Town?",
+        options: ["Pidgeotto", "Bulbasour", "Pikachu", "Caterpie"],
+        answer: ["Caterpie"]
+        },
+        {
+        type: "single",
+        question: "What Pokémon does Misty often ride during water battles or travel across lakes?",
+        options: ["Goldeen", "Gyarados", "Starmie", "Lapras"],
+        answer: ["Starmie"]
+        },
+        {
+        type: "multi",
+        question: "Which charecter/s have family member with same face and designation?",
+        options: ["Nurse Joy", "Officer Jenny", "Brock", "Sabrina"],
+        answer: ["Nurse Joy", "Officer Jenny"]
+        },
+        {
+        type: "fill",
+        question: "Ash's Pokémon that doesn't like staying in it's PokéBall is ____",
+        answer: ["Pikachu"]
+        },
+        {
+        type: "single",
+        question: "Ash's 1st Gym Badge was?",
+        options: ["Boulder Badge", "Hive Badge", "Plane Badge", "Rising Badge"],
+        answer: ["Boulder Badge"]
+        },
+        {
+        type: "single",
+        question: "Who is the leader of Team Rocket that frequently sends Jessie, James, and Meowth on missions?",
+        options: ["Lance", "Cyrus","Giovanni", "Blaine"],
+        answer: ["Giovanni"]
+        },
+        {
+        type: "single",
+        question: "The first Legendary Pokémon Ash, and Pikachu witnessed together?",
+        options: ["Articuno", "Lugia", "Dragonite","Ho-Oh"],
+        answer: ["Ho-Oh"]
+        },
+        {
+        type: "single",
+        question: "The Gym Leader of Saffron City, Sabrina was defected by Ash with the help of which Pokémon?",
+        options: ["Pikachu", "Haunter", "Gastly", "Gengar"],
+        answer: ["Haunter"]
+        },
+        {
+        type: "single",
+        question: "Who is the best match for Ash as a partner?",
+        options: ["Serena", "Dawn", "Misty", "May"],
+        answer: ["Misty"]
+        }
+    ];
+
+    let current = 0, score = 0;
+
+    function loadQuestion() {
+      const q = questions[current];
+      document.getElementById("question").innerText = q.question;
+      const optionsDiv = document.getElementById("options");
+      const fillInput = document.getElementById("fillBlank");
+      optionsDiv.innerHTML = "";
+      fillInput.classList.add("hidden");
+
+      if (q.type === "single" || q.type === "multi") {
+        q.options.forEach(opt => {
+          const input = document.createElement("input");
+          input.type = q.type === "single" ? "radio" : "checkbox";
+          input.name = "option";
+          input.value = opt;
+          optionsDiv.appendChild(input);
+          optionsDiv.appendChild(document.createTextNode(opt));
+          optionsDiv.appendChild(document.createElement("br"));
+        });
+      } else if (q.type === "fill") {
+        fillInput.classList.remove("hidden");
+      }
+    }
+
+    function submitAnswer() {
+      const q = questions[current];
+      let userAnswer = [];
+
+      if (q.type === "single" || q.type === "multi") {
+        const inputs = document.querySelectorAll('input[name="option"]:checked');
+        inputs.forEach(i => userAnswer.push(i.value));
+      } else if (q.type === "fill") {
+        const val = document.getElementById("fillBlank").value.trim();
+        if (val) userAnswer.push(val);
+      }
+
+      if (arraysEqual(userAnswer, q.answer)) score++;
+
+      current++;
+      if (current < questions.length) {
+        loadQuestion();
+      } else {
+        showScore();
+      }
+    }
+
+    function showScore() {
+      document.getElementById("quiz-container").innerHTML = `<h2>Quiz Finished!</h2><p>Your Score: ${score}/${questions.length}</p>`;
+    }
+
+    function arraysEqual(a, b) {
+      return a.sort().toString().toLowerCase() === b.sort().toString().toLowerCase();
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>
